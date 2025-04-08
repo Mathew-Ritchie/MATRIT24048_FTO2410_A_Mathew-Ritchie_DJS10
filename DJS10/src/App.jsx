@@ -3,14 +3,14 @@ import React from "react";
 import "./App.css";
 
 export default function App() {
-  const [blogs, setBlogs] = useState(null);
-  const [error, setError] = useState(null);
+  const [blogs, setBlogs] = useState([]);
+  const [error, setError] = useState([]);
 
   useEffect(() => {
     fetch("https://jsonplaceholder.typicode.com/posts")
       .then((res) => {
         if (!res.ok) {
-          throw new Error(`Error fetching data: ${res.status}`);
+          throw new Error(`${res.status}: Error fetching data, please refresh`);
         }
         return res.json();
       })
@@ -22,7 +22,7 @@ export default function App() {
       .catch((error) => {
         console.error("error fetching data", error);
         setError(error);
-        setBlogs(null);
+        // setBlogs(null);
       });
   }, []);
   console.log(blogs);
@@ -30,7 +30,8 @@ export default function App() {
 
   return (
     <div>
-      {blogs && <h1>Posts</h1>}
+      {error && <h1 className="error">{error.message}</h1>}
+      {!error && <h1>Posts</h1>}
       {blogs.map((blog) => (
         <div key={blog.id}>
           <h2>{blog.title}</h2>
