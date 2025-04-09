@@ -4,27 +4,26 @@ import "./App.css";
 
 export default function App() {
   const [blogs, setBlogs] = useState([]);
-  const [error, setError] = useState([]);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch("https://jsonplaceholder.typicode.com/posts")
-      .then((res) => {
+    async function getdata() {
+      try {
+        const res = await fetch("https://jsonplaceholder.typicode.com/posts");
         if (!res.ok) {
           throw new Error(`${res.status}: Error fetching data, please refresh`);
         }
-        return res.json();
-      })
-
-      .then((data) => {
+        const data = await res.json();
         setBlogs(data);
         setError(null);
-      })
-      .catch((error) => {
+      } catch (error) {
         console.error("error fetching data", error);
         setError(error);
-        // setBlogs(null);
-      });
+      }
+    }
+    getdata();
   }, []);
+
   console.log(blogs);
   console.log(error);
 
